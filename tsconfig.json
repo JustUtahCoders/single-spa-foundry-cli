@@ -1,0 +1,9 @@
+{
+  "files": ["src/cli.ts", "src/js-api.ts"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "lib"
+  }
+}
