@@ -1,3 +1,3 @@
-# single-spa-foundry-cli
+# baseplate-cli
 
-A CLI for deploying to single-spa foundry.
+A CLI for deploying to Baseplate.
