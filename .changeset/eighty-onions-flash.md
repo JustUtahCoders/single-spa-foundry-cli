@@ -1,5 +1,5 @@
 ---
-"@single-spa-foundry/cli": minor
+"@baseplate-sdk/cli": minor
 ---
 
 Initial project setup, including starting deploy command

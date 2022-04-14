@@ -1,17 +1,14 @@
-import {
-  OrgSettings,
-  mergeDefaultOrgSettings,
-} from "@single-spa-foundry/utils";
+import { OrgSettings, mergeDefaultOrgSettings } from "@baseplate-sdk/utils";
 
 export async function deploy(args: DeployArgs) {
   // eslint-disable-next-line
   console.log(`Deploying ${args.microfrontendName}`);
 
-  // Step 1: Get Org Settings by using FOUNDRY_TOKEN
-  const partialOrgSettings = await getOrgSettings(args.foundryToken);
+  // Step 1: Get Org Settings by using BASEPLATE_TOKEN
+  const partialOrgSettings = await getOrgSettings(args.baseplateToken);
 
   if (!partialOrgSettings) {
-    throw Error(`Invalid or expired FOUNDRY_TOKEN`);
+    throw Error(`Invalid or expired BASEPLATE_TOKEN`);
   }
 
   const orgSettings: OrgSettings = mergeDefaultOrgSettings(partialOrgSettings);
@@ -21,14 +18,14 @@ export async function deploy(args: DeployArgs) {
 
   // Step 2: Content Hashing
 
-  // Step 3: If using foundry hosting, get temporary AWS credentials
+  // Step 3: If using Baseplate hosting, get temporary AWS credentials
 
   // Step 4: Use the AWS SDK to upload the files to s3
   // https://github.com/aws/aws-sdk-js-v3#getting-started
 }
 
 export async function getOrgSettings(
-  foundryToken: string
+  baseplateToken: string
 ): Promise<RecursivePartial<OrgSettings>> {
   return {
     orgExists: true,
@@ -36,7 +33,7 @@ export async function getOrgSettings(
 }
 
 interface DeployArgs {
-  foundryToken: string;
+  baseplateToken: string;
   microfrontendName: string;
 }
 

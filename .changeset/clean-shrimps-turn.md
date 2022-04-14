@@ -1,5 +1,5 @@
 ---
-"@single-spa-foundry/cli": minor
+"@baseplate-sdk/cli": minor
 ---
 
-Use foundry utils to get full org settings
+Use baseplate utils to get full org settings

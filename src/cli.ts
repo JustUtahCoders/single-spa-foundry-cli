@@ -3,11 +3,11 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { deploy } from "./js-api";
 
-const foundryToken = process.env.FOUNDRY_TOKEN;
+const baseplateToken = process.env.BASEPLATE_TOKEN;
 
-if (!foundryToken) {
+if (!baseplateToken) {
   throw Error(
-    `FOUNDRY_TOKEN environment variable is required to use single-spa-foundry-cli.`
+    `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`
   );
 }
 
@@ -22,7 +22,7 @@ yargs(hideBin(process.argv))
     },
     (argv) => {
       deploy({
-        foundryToken,
+        baseplateToken,
         microfrontendName: argv.microfrontendName as string,
       });
     }
