@@ -13,7 +13,9 @@ import {
   EndpointGetDeploymentCredentialsResBody,
   EndpointGetMicrofrontendsResBody,
   EndpointGetStaticWebSettingsResBody,
+  EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
+import { log, exitWithError, baseplateFetch } from "./cli-utils";
 
 export async function deploy(args: DeployArgs) {
   log(
@@ -23,10 +25,9 @@ export async function deploy(args: DeployArgs) {
   log(
     `Step 1/4: Authenticate with baseplate API and retrieve organization settings`
   );
-  const { id: customerOrgId, orgKey } = await baseplateFetch<{
-    id: string;
-    orgKey: string;
-  }>(`/api/orgs/me`);
+  const customerOrgResponse =
+    await baseplateFetch<EndpointGetMyCustomerOrgResBody>(`/api/orgs/me`);
+  const { id: customerOrgId, orgKey } = customerOrgResponse;
 
   const partialOrgSettings =
     await baseplateFetch<EndpointGetStaticWebSettingsResBody>(
@@ -158,62 +159,6 @@ export async function deploy(args: DeployArgs) {
   }
 }
 
-async function exitWithError(err: string) {
-  console.error(err);
-  process.exit(1);
-}
-
-async function baseplateFetch<Res = any, ReqBody = any>(
-  url: string,
-  options: BaseplateRequestInit<ReqBody> = {}
-): Promise<Res> {
-  if (!options.headers) {
-    options.headers = {};
-  }
-
-  if (options.body && typeof options.body === "object") {
-    options.body = JSON.stringify(options.body);
-    options.headers["content-type"] = "application/json";
-  }
-
-  options.headers["Authorization"] = `token ${process.env.BASEPLATE_TOKEN}`;
-
-  const baseUrl = process.env.BASEPLATE_API || "https://baseplate.cloud";
-
-  let response;
-
-  try {
-    response = await fetch(baseUrl + url, options as RequestInit);
-  } catch (err) {
-    console.error(err.message);
-    exitWithError(
-      `Did not receive valid HTTP response from Baseplate API for url ${url}`
-    );
-  }
-
-  if (response.ok) {
-    return response.json() as Promise<Res>;
-  } else {
-    console.error(await response.text());
-    exitWithError(
-      `While calling ${url}, Baseplate API responded with status ${response.status}`
-    );
-  }
-}
-
-function log(str: string, indentationLevel = 0) {
-  let prefix = "";
-  for (let i = 0; i < indentationLevel; i++) {
-    prefix += "--";
-  }
-  if (prefix) {
-    prefix += "> ";
-  }
-
-  // eslint-disable-next-line no-console
-  console.log(prefix + str);
-}
-
 async function recurseDir(allFiles: string[], dir: string): Promise<void> {
   const files = await fsP.readdir(dir);
   for (let file of files) {
@@ -232,7 +177,3 @@ interface DeployArgs {
   environmentName: string;
   dir: string;
 }
-
-type BaseplateRequestInit<RequestBody = object> = Omit<RequestInit, "body"> & {
-  body?: undefined | string | RequestBody;
-};
