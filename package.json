@@ -9,7 +9,7 @@
     "lib"
   ],
   "scripts": {
-    "cli": "cross-env NODE_OPTIONS=\"--loader ts-node/esm --experimental-specifier-resolution=node\" BASEPLATE_TOKEN=sample node src/cli.ts",
+    "cli": "cross-env NODE_OPTIONS=\"--loader ts-node/esm --experimental-specifier-resolution=node --experimental-fetch\" node src/cli.ts",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "lint": "eslint \"src/**/*\"",
@@ -48,7 +48,9 @@
     "yargs": "^17.5.1"
   },
   "dependencies": {
-    "@baseplate-sdk/utils": "^3.1.0",
+    "@aws-sdk/client-s3": "^3.92.0",
+    "@baseplate-sdk/utils": "^3.1.1",
+    "@baseplate-sdk/web-app": "^2.0.3",
     "@types/node": "^17.0.34",
     "@types/yargs": "^17.0.10"
   }
