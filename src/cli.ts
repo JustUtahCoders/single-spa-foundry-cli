@@ -16,14 +16,25 @@ yargs(hideBin(process.argv))
     "deploy <microfrontendName>",
     "deploy a microfrontend",
     (yargs) => {
-      return yargs.positional("microfrontendName", {
-        describe: "The name of the microfrontend you wish to deploy",
-      });
+      return yargs
+        .positional("microfrontendName", {
+          describe: "The name of the microfrontend you wish to deploy",
+        })
+        .option("environment", {
+          alias: "e",
+        })
+        .demandOption("environment")
+        .option("dir", {
+          default: "dist",
+        })
+        .demandOption("dir");
     },
     (argv) => {
       deploy({
         baseplateToken,
         microfrontendName: argv.microfrontendName as string,
+        environmentName: argv.environment as string,
+        dir: argv.dir as string,
       });
     }
   )

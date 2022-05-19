@@ -1,9 +1,11 @@
 {
   "files": ["src/cli.ts", "src/js-api.ts"],
+  "include": ["src/declarations.d.ts"],
   "compilerOptions": {
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "outDir": "lib"
+    "outDir": "lib",
+    "target": "ES2022"
   }
 }
