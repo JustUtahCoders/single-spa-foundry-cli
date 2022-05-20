@@ -20,14 +20,14 @@ yargs(hideBin(process.argv))
         .positional("microfrontendName", {
           describe: "The name of the microfrontend you wish to deploy",
         })
-        .option("environment", {
-          alias: "e",
-        })
+        .option("environment", {})
         .demandOption("environment")
         .option("dir", {
           default: "dist",
         })
-        .demandOption("dir");
+        .demandOption("dir")
+        .option("entry", {})
+        .demandOption("entry");
     },
     (argv) => {
       deploy({
@@ -35,6 +35,7 @@ yargs(hideBin(process.argv))
         microfrontendName: argv.microfrontendName as string,
         environmentName: argv.environment as string,
         dir: argv.dir as string,
+        entry: argv.entry as string,
       });
     }
   )
