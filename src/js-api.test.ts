@@ -21,6 +21,7 @@ describe(`deploy command`, () => {
       microfrontendName: "navbar",
       environmentName: "prod",
       dir: "fixtures/simple",
+      entry: "navbar.js",
     });
 
     expect(exitWithError).not.toHaveBeenCalled();
@@ -29,11 +30,11 @@ describe(`deploy command`, () => {
       "Step 1/4: Authenticate with baseplate API and retrieve organization settings",
       "Step 2/4: Determine microfrontend entrypoint and find all assets to upload.",
       "Found 2 files to upload",
-      "fixtures/simple/navbar.css",
-      "fixtures/simple/navbar.js",
+      "navbar.css",
+      "navbar.js",
       "Step 3/4: Upload static web assets to cloud storage.",
-      "Uploading fixtures/simple/navbar.css to apps/navbar/fixtures/simple/navbar.css",
-      "Uploading fixtures/simple/navbar.js to apps/navbar/fixtures/simple/navbar.js",
+      "Uploading navbar.css to navbar/navbar.css",
+      "Uploading navbar.js to navbar/navbar.js",
       "Completed uploading files",
       "Step 4/4: Update Import Map to use new javascript entrypoint for navbar.",
     ];
