@@ -82,7 +82,7 @@ export async function deploy(args: DeployArgs) {
     );
   }
 
-  await recurseDir(files, args.dir);
+  await recurseDir(files, args.dir, false);
 
   if (files.length === 0) {
     return exitWithError(
@@ -104,16 +104,14 @@ export async function deploy(args: DeployArgs) {
       credentials: deploymentCredentials.aws.credentials,
     });
 
-    const prefix = `apps/${args.microfrontendName}/`;
-
     for (let file of files) {
-      const Key = prefix + file;
+      const Key = args.microfrontendName + "/" + file;
       log(`Uploading ${file} to ${Key}`, 1);
       await s3Client.send(
         new PutObjectCommand({
           Bucket: deploymentCredentials.aws.bucket,
           Key,
-          Body: fs.createReadStream(file),
+          Body: fs.createReadStream(path.join(args.dir, file)),
         })
       );
     }
@@ -128,8 +126,8 @@ export async function deploy(args: DeployArgs) {
   log(
     `Step 4/4: Update Import Map to use new javascript entrypoint for ${args.microfrontendName}.`
   );
-  const trailingSlashUrl = `https://cdn.baseplate.cloud/${orgKey}/apps/${microfrontend.name}/`;
-  const entryUrl = trailingSlashUrl + "entry.js";
+  const trailingSlashUrl = `/`;
+  const entryUrl = trailingSlashUrl + args.entry;
 
   const deploymentResponse = await baseplateFetch<
     EndpointCreateDeploymentResBody,
@@ -159,14 +157,18 @@ export async function deploy(args: DeployArgs) {
   }
 }
 
-async function recurseDir(allFiles: string[], dir: string): Promise<void> {
+async function recurseDir(
+  allFiles: string[],
+  dir: string,
+  includeParentDirInPath: boolean
+): Promise<void> {
   const files = await fsP.readdir(dir);
   for (let file of files) {
-    const relativePath = path.join(dir, file);
-    if ((await fsP.stat(relativePath)).isDirectory()) {
-      recurseDir(allFiles, file);
+    const pathWithParentDir = path.join(dir, file);
+    if ((await fsP.stat(pathWithParentDir)).isDirectory()) {
+      recurseDir(allFiles, pathWithParentDir, true);
     } else {
-      allFiles.push(relativePath);
+      allFiles.push(includeParentDirInPath ? pathWithParentDir : file);
     }
   }
 }
@@ -176,4 +178,5 @@ interface DeployArgs {
   microfrontendName: string;
   environmentName: string;
   dir: string;
+  entry: string;
 }
