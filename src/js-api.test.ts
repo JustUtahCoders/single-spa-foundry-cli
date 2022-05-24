@@ -43,6 +43,58 @@ describe(`deploy command`, () => {
       expect((log as jest.Mock).mock.calls[i][0]).toEqual(logs[i]);
     }
   });
+
+  it(`requires env vars when deploying to self hosted buckets`, async () => {
+    setMocks({
+      staticWebSettings(settings) {
+        settings.staticFiles.microfrontendProxy.environments.prod.useBaseplateHosting =
+          false;
+        return settings;
+      },
+    });
+
+    // Env Vars not set
+    await deploy({
+      baseplateToken: "sample",
+      microfrontendName: "navbar",
+      environmentName: "prod",
+      dir: "fixtures/simple",
+      entry: "navbar.js",
+    });
+
+    expect(exitWithError).toHaveBeenCalledWith(
+      `Environment variables AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY required to deploy to self-hosted environment at url s3://prod`
+    );
+  });
+
+  it(`works with proper env variables, when deploying to self hosted buckets`, async () => {
+    setMocks({
+      staticWebSettings(settings) {
+        settings.staticFiles.microfrontendProxy.environments.prod.useBaseplateHosting =
+          false;
+        return settings;
+      },
+    });
+
+    process.env.AWS_REGION = "us-west-1";
+    process.env.AWS_ACCESS_KEY_ID = "879sfyd";
+    process.env.AWS_SECRET_ACCESS_KEY = "987sdf7sdf";
+
+    // Env Vars not set
+    await deploy({
+      baseplateToken: "sample",
+      microfrontendName: "navbar",
+      environmentName: "prod",
+      dir: "fixtures/simple",
+      entry: "navbar.js",
+    });
+
+    delete process.env.AWS_REGION;
+    delete process.env.AWS_ACCESS_KEY_ID;
+    delete process.env.AWS_SECRET_ACCESS_KEY;
+
+    expect(exitWithError).not.toHaveBeenCalled();
+  });
 });
 
 const defaultOrgId = "orgId",
@@ -123,33 +175,45 @@ const defaultCreatedDeployment: EndpointCreateDeploymentResBody = {
 };
 
 const defaultMocks: Mocks = {
-  customerOrg: defaultCustomerOrg,
-  createdDeployment: defaultCreatedDeployment,
-  deploymentCreds: defaultDeploymentCreds,
-  microfrontendList: defaultMicrofrontendList,
-  staticWebSettings: defaultStaticWebSettings,
+  customerOrg: () => defaultCustomerOrg,
+  createdDeployment: () => defaultCreatedDeployment,
+  deploymentCreds: () => defaultDeploymentCreds,
+  microfrontendList: () => defaultMicrofrontendList,
+  staticWebSettings: () => defaultStaticWebSettings,
+  fileList: () => ({
+    topLevelDirExists: true,
+    files: [],
+  }),
 };
 
 function setMocks({
-  customerOrg = defaultCustomerOrg,
-  staticWebSettings = defaultStaticWebSettings,
-  microfrontendList = defaultMicrofrontendList,
-  deploymentCreds = defaultDeploymentCreds,
-  createdDeployment = defaultCreatedDeployment,
+  customerOrg = () => defaultCustomerOrg,
+  staticWebSettings = () => defaultStaticWebSettings,
+  microfrontendList = () => defaultMicrofrontendList,
+  deploymentCreds = () => defaultDeploymentCreds,
+  createdDeployment = () => defaultCreatedDeployment,
 }: Mocks = defaultMocks) {
-  baseplateFetchMocks["/api/orgs/me"] = customerOrg;
+  baseplateFetchMocks["/api/orgs/me"] = customerOrg(defaultCustomerOrg);
   baseplateFetchMocks[`/api/orgs/${defaultOrgId}/static-web-settings`] =
-    staticWebSettings;
+    staticWebSettings(defaultStaticWebSettings);
   baseplateFetchMocks[`/api/orgs/${defaultOrgId}/microfrontends`] =
-    microfrontendList;
+    microfrontendList(defaultMicrofrontendList);
   baseplateFetchMocks[
     `/api/orgs/${defaultOrgId}/environments/${defaultEnvId}/deployment-credentials`
-  ] = deploymentCreds;
+  ] = deploymentCreds(defaultDeploymentCreds);
   baseplateFetchMocks[`/api/orgs/${defaultOrgId}/deployments`] =
-    createdDeployment;
+    createdDeployment(defaultCreatedDeployment);
 }
 
 function resetMocks() {
+  // @ts-ignore
+  log.mockClear();
+  // @ts-ignore
+  exitWithError.mockClear();
+  for (let key in baseplateFetchMocks) {
+    delete baseplateFetchMocks[key];
+  }
+
   delete baseplateFetchMocks["/api/orgs/me"];
   delete baseplateFetchMocks[`/api/orgs/${defaultOrgId}/static-web-settings`];
   delete baseplateFetchMocks[`/api/orgs/${defaultOrgId}/microfrontends`];
@@ -160,12 +224,22 @@ function resetMocks() {
 }
 
 interface Mocks {
-  customerOrg: EndpointGetMyCustomerOrgResBody;
-  staticWebSettings: EndpointGetStaticWebSettingsResBody;
-  microfrontendList: EndpointGetMicrofrontendsResBody;
-  deploymentCreds: EndpointGetDeploymentCredentialsResBody;
-  createdDeployment: EndpointCreateDeploymentResBody;
-  fileList: FileList;
+  customerOrg?(
+    defaultValue: EndpointGetMyCustomerOrgResBody
+  ): EndpointGetMyCustomerOrgResBody;
+  staticWebSettings?(
+    defaultValue: EndpointGetStaticWebSettingsResBody
+  ): EndpointGetStaticWebSettingsResBody;
+  microfrontendList?(
+    defaultValue: EndpointGetMicrofrontendsResBody
+  ): EndpointGetMicrofrontendsResBody;
+  deploymentCreds?(
+    defaultValue: EndpointGetDeploymentCredentialsResBody
+  ): EndpointGetDeploymentCredentialsResBody;
+  createdDeployment?(
+    defaultValue: EndpointCreateDeploymentResBody
+  ): EndpointCreateDeploymentResBody;
+  fileList?(defaultValue: FileList): FileList;
 }
 
 interface FileList {
