@@ -94,34 +94,60 @@ export async function deploy(args: DeployArgs) {
   files.forEach((file) => log(file, 2));
 
   log(`Step 3/4: Upload static web assets to cloud storage.`);
+  let s3Client: S3Client, Bucket: string;
+
   if (proxySettings.useBaseplateHosting) {
     const deploymentCredentials =
       await baseplateFetch<EndpointGetDeploymentCredentialsResBody>(
         `/api/orgs/${customerOrgId}/environments/${proxySettings.environmentId}/deployment-credentials`
       );
-    const s3Client = new S3Client({
+    s3Client = new S3Client({
       region: deploymentCredentials.aws.region,
       credentials: deploymentCredentials.aws.credentials,
     });
+    Bucket = deploymentCredentials.aws.bucket;
+  } else if (proxySettings.host.startsWith("s3://")) {
+    Bucket = proxySettings.host.slice("s3://".length);
+    const requiredEnvVars = [
+      "AWS_REGION",
+      "AWS_ACCESS_KEY_ID",
+      "AWS_SECRET_ACCESS_KEY",
+    ];
+    const missingEnvVars = requiredEnvVars.filter((v) => !process.env[v]);
 
-    for (let file of files) {
-      const Key = args.microfrontendName + "/" + file;
-      log(`Uploading ${file} to ${Key}`, 1);
-      await s3Client.send(
-        new PutObjectCommand({
-          Bucket: deploymentCredentials.aws.bucket,
-          Key,
-          Body: fs.createReadStream(path.join(args.dir, file)),
-        })
+    if (missingEnvVars.length > 0) {
+      return exitWithError(
+        `Environment variable${
+          missingEnvVars.length === 1 ? "" : "s"
+        } ${missingEnvVars.join(
+          ", "
+        )} required to deploy to self-hosted environment at url ${
+          proxySettings.host
+        }`
       );
     }
 
-    log("Completed uploading files", 1);
+    // AWS SDK reads the env vars for us
+    s3Client = new S3Client({});
   } else {
     return exitWithError(
-      `baseplate-cli doesn't yet support deploying to self-hosted buckets`
+      `baseplate-cli doesn't yet support deploying to anything except s3 buckets. Bucket URL: ${proxySettings.host}`
     );
   }
+
+  for (let file of files) {
+    const Key = args.microfrontendName + "/" + file;
+    log(`Uploading ${file} to ${Key}`, 1);
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket,
+        Key,
+        Body: fs.createReadStream(path.join(args.dir, file)),
+      })
+    );
+  }
+
+  log("Completed uploading files", 1);
 
   log(
     `Step 4/4: Update Import Map to use new javascript entrypoint for ${args.microfrontendName}.`
