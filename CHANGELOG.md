@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 1.0.1
+
+### Patch Changes
+
+- [#9](https://github.com/JustUtahCoders/baseplate-cli/pull/9) [`d182cd8`](https://github.com/JustUtahCoders/baseplate-cli/commit/d182cd845805fc05865dfb00db5135d1901cfe02) Thanks [@joeldenning](https://github.com/joeldenning)! - Publish types to npm
+
 ## 1.0.0
 
 ### Major Changes
