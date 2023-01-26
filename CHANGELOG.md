@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 1.0.2
+
+### Patch Changes
+
+- [#10](https://github.com/JustUtahCoders/baseplate-cli/pull/10) [`827d52e`](https://github.com/JustUtahCoders/baseplate-cli/commit/827d52e0d63e910c4d4fba22769545ff8cc7ae1c) Thanks [@joeldenning](https://github.com/joeldenning)! - Fix file extension issue with typescript compilation
+
 ## 1.0.1
 
 ### Patch Changes
