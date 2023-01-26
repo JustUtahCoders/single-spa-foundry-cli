@@ -1,6 +1,6 @@
 {
   "name": "@baseplate-sdk/cli",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Deployment CLI for Baseplate",
   "type": "module",
   "main": "lib/js-api.js",
@@ -16,6 +16,9 @@
     "build": "rimraf lib && tsc",
     "prepublishOnly": "pnpm run build",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "repository": {
     "type": "git",
