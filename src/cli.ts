@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { deploy } from "./js-api";
+import { deploy } from "./js-api.js";
 
 const baseplateToken = process.env.BASEPLATE_TOKEN;
 
