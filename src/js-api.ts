@@ -15,7 +15,7 @@ import {
   EndpointGetStaticWebSettingsResBody,
   EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
-import { log, exitWithError, baseplateFetch } from "./cli-utils";
+import { log, exitWithError, baseplateFetch } from "./cli-utils.js";
 
 export async function deploy(args: DeployArgs) {
   log(
