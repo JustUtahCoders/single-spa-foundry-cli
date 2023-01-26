@@ -17,6 +17,7 @@
     "prepublishOnly": "pnpm run build",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
+  "types": "lib/js-api.d.ts",
   "publishConfig": {
     "access": "public"
   },
