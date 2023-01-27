@@ -1,3 +1,5 @@
+import fetch, { RequestInit } from "node-fetch";
+
 export function exitWithError(err: string) {
   console.error(err);
   process.exit(1);
