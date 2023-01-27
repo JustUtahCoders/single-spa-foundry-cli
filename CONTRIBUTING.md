@@ -15,4 +15,4 @@ pnpm exec changeset add
 5. `git add . && git commit -m "VERSION NUMBER GOES HERE"`
 6. `pnpm exec changeset publish`
 7. `git push --follow-tags`
-8. Create Github release from tags. For release notes, put `See [Changelog](https://github.com/JustUtahCoders/baseplate-cli/blob/main/CHANGELOG.md)`
+8. [Create Github release](https://github.com/JustUtahCoders/baseplate-cli/releases/new) from tags. For release notes, put `See [Changelog](https://github.com/JustUtahCoders/baseplate-cli/blob/main/CHANGELOG.md)`
