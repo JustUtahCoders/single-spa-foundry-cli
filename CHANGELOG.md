@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 1.1.0
+
+### Minor Changes
+
+- [#11](https://github.com/JustUtahCoders/baseplate-cli/pull/11) [`f2f501c`](https://github.com/JustUtahCoders/baseplate-cli/commit/f2f501cd4c5ed2df8bad1a0d3c1b7da428228934) Thanks [@joeldenning](https://github.com/joeldenning)! - Upgrade dependencies, use node-fetch
+
 ## 1.0.2
 
 ### Patch Changes
