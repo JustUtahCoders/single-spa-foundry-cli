@@ -1,3 +1,5 @@
+// Regrettably, many CI providers don't yet support NodeJS 18.
+// Otherwise, we'd use NodeJS' native fetch implementation
 import fetch, { RequestInit } from "node-fetch";
 
 export function exitWithError(err: string) {
