@@ -5,12 +5,6 @@ import { deploy } from "./js-api.js";
 
 const baseplateToken = process.env.BASEPLATE_TOKEN;
 
-if (!baseplateToken) {
-  throw Error(
-    `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`
-  );
-}
-
 yargs(hideBin(process.argv))
   .command(
     "deploy <microfrontendName>",
@@ -30,6 +24,11 @@ yargs(hideBin(process.argv))
         .demandOption("entry");
     },
     (argv) => {
+      if (!baseplateToken) {
+        throw Error(
+          `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`
+        );
+      }
       deploy({
         baseplateToken,
         microfrontendName: argv.microfrontendName as string,
