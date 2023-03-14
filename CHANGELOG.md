@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 1.1.1
+
+### Patch Changes
+
+- [#14](https://github.com/JustUtahCoders/baseplate-cli/pull/14) [`df7cdd7`](https://github.com/JustUtahCoders/baseplate-cli/commit/df7cdd79a591e1f3ce92e2a77881cc9b04a88452) Thanks [@joeldenning](https://github.com/joeldenning)! - Fix issue where baseplate command wasn't in path correctly
+
 ## 1.1.0
 
 ### Minor Changes
