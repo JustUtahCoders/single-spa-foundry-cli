@@ -1,5 +1,13 @@
 # @baseplate-sdk/cli
 
+## 1.1.2
+
+### Patch Changes
+
+- [#15](https://github.com/JustUtahCoders/baseplate-cli/pull/15) [`e4bbd43`](https://github.com/JustUtahCoders/baseplate-cli/commit/e4bbd435ff58b4d2c596e965eff715a6e99948c6) Thanks [@joeldenning](https://github.com/joeldenning)! - Change yargs scriptName for better usage printout
+
+- [#16](https://github.com/JustUtahCoders/baseplate-cli/pull/16) [`6b7cc9b`](https://github.com/JustUtahCoders/baseplate-cli/commit/6b7cc9bb9a89717bb8e35c641db91534bfe1b056) Thanks [@joeldenning](https://github.com/joeldenning)! - Allow baseplate token to be passed via JS API rather than env var
+
 ## 1.1.1
 
 ### Patch Changes
