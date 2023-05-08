@@ -15,7 +15,7 @@ import {
   EndpointGetStaticWebSettingsResBody,
   EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
-import { log, exitWithError, baseplateFetch } from "./cli-utils.js";
+import { log, exitWithError, createBaseplateFetch } from "./cli-utils.js";
 
 export async function deploy(args: DeployArgs) {
   log(
@@ -25,6 +25,8 @@ export async function deploy(args: DeployArgs) {
   log(
     `Step 1/4: Authenticate with baseplate API and retrieve organization settings`
   );
+  const baseplateFetch = createBaseplateFetch(args);
+
   const customerOrgResponse =
     await baseplateFetch<EndpointGetMyCustomerOrgResBody>(`/api/orgs/me`);
   const { id: customerOrgId, orgKey } = customerOrgResponse;
@@ -199,7 +201,7 @@ async function recurseDir(
   }
 }
 
-interface DeployArgs {
+export interface DeployArgs {
   baseplateToken: string;
   microfrontendName: string;
   environmentName: string;
