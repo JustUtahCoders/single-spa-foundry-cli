@@ -39,4 +39,5 @@ yargs(hideBin(process.argv))
     }
   )
   .demandCommand(1)
+  .scriptName("baseplate")
   .parse();
