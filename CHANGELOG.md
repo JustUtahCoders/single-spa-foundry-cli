@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 1.1.3
+
+### Patch Changes
+
+- [#17](https://github.com/ConvexCooperative/baseplate-cli/pull/17) [`009b71a`](https://github.com/ConvexCooperative/baseplate-cli/commit/009b71a4f52557b4aad9255d21adcf6e3637b912) Thanks [@joeldenning](https://github.com/joeldenning)! - Update references to old Github owner, now that Baseplate is owned by Convex Cooperative
+
 ## 1.1.2
 
 ### Patch Changes
