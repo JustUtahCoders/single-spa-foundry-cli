@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 1.1.4
+
+### Patch Changes
+
+- [#18](https://github.com/ConvexCooperative/baseplate-cli/pull/18) [`d1919f1`](https://github.com/ConvexCooperative/baseplate-cli/commit/d1919f1d40bbfcc96e6d6a7002f8e37977b8b928) Thanks [@joeldenning](https://github.com/joeldenning)! - Better error message when baseplateToken is missing
+
 ## 1.1.3
 
 ### Patch Changes
