@@ -95,6 +95,33 @@ describe(`deploy command`, () => {
 
     expect(exitWithError).not.toHaveBeenCalled();
   });
+
+  it(`throws an error without baseplateToken deploy arg`, async () => {
+    delete process.env["BASEPLATE_TOKEN"];
+
+    setMocks({
+      staticWebSettings(settings) {
+        settings.staticFiles.microfrontendProxy.environments.prod.useBaseplateHosting =
+          false;
+        return settings;
+      },
+    });
+
+    try {
+      // @ts-ignore
+      await deploy({
+        microfrontendName: "navbar",
+        environmentName: "prod",
+        dir: "fixtures/simple",
+        entry: "navbar.js",
+      });
+    } catch (err) {
+      expect(err.message).toMatch(/baseplate cli requires a baseplateToken/);
+      return;
+    }
+
+    throw Error("error expected when deployToken is missing");
+  });
 });
 
 const defaultOrgId = "orgId",
