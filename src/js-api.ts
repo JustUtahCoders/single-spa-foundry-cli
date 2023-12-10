@@ -33,7 +33,6 @@ export async function deploy(args: DeployArgs) {
   log(
     `Step 1/4: Authenticate with baseplate API and retrieve organization settings`
   );
-
   const baseplateFetch = createBaseplateFetch(args);
 
   const customerOrgResponse =
