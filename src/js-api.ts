@@ -18,6 +18,14 @@ import {
 import { log, exitWithError, createBaseplateFetch } from "./cli-utils.js";
 
 export async function deploy(args: DeployArgs) {
+  const baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN;
+
+  if (!baseplateToken) {
+    throw Error(
+      `baseplate cli requires a baseplateToken to be passed via arguments or the BASEPLATE_TOKEN environment variable`
+    );
+  }
+
   log(
     `Deploying ${args.microfrontendName} to environment ${args.environmentName}`
   );
@@ -25,6 +33,7 @@ export async function deploy(args: DeployArgs) {
   log(
     `Step 1/4: Authenticate with baseplate API and retrieve organization settings`
   );
+
   const baseplateFetch = createBaseplateFetch(args);
 
   const customerOrgResponse =
