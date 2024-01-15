@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { deploy } from "./js-api.js";
+import { deploy } from "./js-api";
 
 const baseplateToken = process.env.BASEPLATE_TOKEN;
 
@@ -26,7 +26,7 @@ yargs(hideBin(process.argv))
     (argv) => {
       if (!baseplateToken) {
         throw Error(
-          `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`
+          `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`,
         );
       }
       deploy({
@@ -36,7 +36,7 @@ yargs(hideBin(process.argv))
         dir: argv.dir as string,
         entry: argv.entry as string,
       });
-    }
+    },
   )
   .demandCommand(1)
   .scriptName("baseplate")
