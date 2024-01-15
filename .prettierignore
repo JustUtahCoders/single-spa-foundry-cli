@@ -1,2 +1,4 @@
 pnpm-lock.yaml
 lib
+.husky/pre-commit
+.prettierignore

@@ -17,7 +17,7 @@ export const createBaseplateFetch = (deployArgs: DeployArgs) => {
       throw mock;
     } else if (typeof mock === "number") {
       throw Error(
-        `Baseplate API for url '${url}' responded with HTTP status ${mock}`
+        `Baseplate API for url '${url}' responded with HTTP status ${mock}`,
       );
     } else if (typeof mock === "object" && mock !== null) {
       return mock;

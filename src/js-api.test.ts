@@ -63,7 +63,7 @@ describe(`deploy command`, () => {
     });
 
     expect(exitWithError).toHaveBeenCalledWith(
-      `Environment variables AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY required to deploy to self-hosted environment at url s3://prod`
+      `Environment variables AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY required to deploy to self-hosted environment at url s3://prod`,
     );
   });
 
@@ -252,19 +252,19 @@ function resetMocks() {
 
 interface Mocks {
   customerOrg?(
-    defaultValue: EndpointGetMyCustomerOrgResBody
+    defaultValue: EndpointGetMyCustomerOrgResBody,
   ): EndpointGetMyCustomerOrgResBody;
   staticWebSettings?(
-    defaultValue: EndpointGetStaticWebSettingsResBody
+    defaultValue: EndpointGetStaticWebSettingsResBody,
   ): EndpointGetStaticWebSettingsResBody;
   microfrontendList?(
-    defaultValue: EndpointGetMicrofrontendsResBody
+    defaultValue: EndpointGetMicrofrontendsResBody,
   ): EndpointGetMicrofrontendsResBody;
   deploymentCreds?(
-    defaultValue: EndpointGetDeploymentCredentialsResBody
+    defaultValue: EndpointGetDeploymentCredentialsResBody,
   ): EndpointGetDeploymentCredentialsResBody;
   createdDeployment?(
-    defaultValue: EndpointCreateDeploymentResBody
+    defaultValue: EndpointCreateDeploymentResBody,
   ): EndpointCreateDeploymentResBody;
   fileList?(defaultValue: FileList): FileList;
 }
