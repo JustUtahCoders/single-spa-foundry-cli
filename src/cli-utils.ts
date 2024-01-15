@@ -24,7 +24,7 @@ export function log(str: string, indentationLevel = 0) {
 export function createBaseplateFetch(deployArgs: DeployArgs) {
   return async function baseplateFetch<Res = any, ReqBody = any>(
     url: string,
-    options: BaseplateRequestInit<ReqBody> = {}
+    options: BaseplateRequestInit<ReqBody> = {},
   ): Promise<Res> {
     if (!options.headers) {
       options.headers = {};
@@ -48,7 +48,7 @@ export function createBaseplateFetch(deployArgs: DeployArgs) {
     } catch (err) {
       console.error(err.message);
       exitWithError(
-        `Did not receive valid HTTP response from Baseplate API for url ${url}`
+        `Did not receive valid HTTP response from Baseplate API for url ${url}`,
       );
     }
 
@@ -57,7 +57,7 @@ export function createBaseplateFetch(deployArgs: DeployArgs) {
     } else {
       console.error(await response.text());
       exitWithError(
-        `While calling ${url}, Baseplate API responded with status ${response.status}`
+        `While calling ${url}, Baseplate API responded with status ${response.status}`,
       );
     }
   };
