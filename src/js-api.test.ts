@@ -104,6 +104,15 @@ describe(`deploy command`, () => {
     delete process.env.AWS_ACCESS_KEY_ID;
     delete process.env.AWS_SECRET_ACCESS_KEY;
 
+    const entryUrl = `/navbar.js`;
+    const s3Key = `navbar/navbar.js`;
+    const deployApiReqInit =
+      baseplateFetchHistory[`/api/orgs/${defaultOrgId}/deployments`];
+    expect(deployApiReqInit.body.changedMicrofrontends[0].entryUrl).toEqual(
+      entryUrl,
+    );
+    expect(s3ObjectsPut[s3Key]).toBeTruthy();
+
     expect(exitWithError).not.toHaveBeenCalled();
   });
 
