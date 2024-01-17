@@ -1,5 +1,21 @@
 # @baseplate-sdk/cli
 
+## 2.0.0
+
+### Major Changes
+
+- [#19](https://github.com/ConvexCooperative/baseplate-cli/pull/19) [`73a9f7a`](https://github.com/ConvexCooperative/baseplate-cli/commit/73a9f7a4ef61afb44b3fe22a93cbef94b278b0e4) Thanks [@joeldenning](https://github.com/joeldenning)! - Change ownership to Convex Cooperative
+
+### Minor Changes
+
+- [#21](https://github.com/ConvexCooperative/baseplate-cli/pull/21) [`7846554`](https://github.com/ConvexCooperative/baseplate-cli/commit/7846554dbca966cf996b2976da5d0653503c5965) Thanks [@joeldenning](https://github.com/joeldenning)! - Support for the --autoVersion flag
+
+### Patch Changes
+
+- [#21](https://github.com/ConvexCooperative/baseplate-cli/pull/21) [`7846554`](https://github.com/ConvexCooperative/baseplate-cli/commit/7846554dbca966cf996b2976da5d0653503c5965) Thanks [@joeldenning](https://github.com/joeldenning)! - Add import map url and microfrontend urls to logs
+
+- [#20](https://github.com/ConvexCooperative/baseplate-cli/pull/20) [`79a840d`](https://github.com/ConvexCooperative/baseplate-cli/commit/79a840d62490aaca013939392c31d885228147b9) Thanks [@joeldenning](https://github.com/joeldenning)! - Upgrade dependencies and local dev workflow
+
 ## 1.1.4
 
 ### Patch Changes
