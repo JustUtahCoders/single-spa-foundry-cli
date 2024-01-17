@@ -191,8 +191,8 @@ export async function deploy(args: DeployArgs) {
       `Deployment failed. For more details, see deployment ${deploymentResponse.deployment.id}`,
     );
   } else {
-    // @ts-ignore this can be removed once https://github.com/ConvexCooperative/baseplate-web-app/pull/441 is merged and published
     log(
+      // @ts-ignore this can be removed once https://github.com/ConvexCooperative/baseplate-web-app/pull/441 is merged and published
       `--> Newly deployed version of '${args.microfrontendName}' microfrontend is available at ${deploymentResponse.changedMicrofrontendEntryUrls[0]}`,
     );
     // @ts-ignore this can be removed once https://github.com/ConvexCooperative/baseplate-web-app/pull/441 is merged and published
