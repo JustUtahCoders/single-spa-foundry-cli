@@ -21,7 +21,10 @@ yargs(hideBin(process.argv))
         })
         .demandOption("dir")
         .option("entry", {})
-        .demandOption("entry");
+        .demandOption("entry")
+        .option("autoVersion", {
+          type: "boolean",
+        });
     },
     (argv) => {
       if (!baseplateToken) {
@@ -35,6 +38,7 @@ yargs(hideBin(process.argv))
         environmentName: argv.environment as string,
         dir: argv.dir as string,
         entry: argv.entry as string,
+        autoVersion: argv.autoVersion,
       });
     },
   )
