@@ -6,12 +6,21 @@ import {
   EndpointGetMyCustomerOrgResBody,
   EndpointGetStaticWebSettingsResBody,
 } from "@baseplate-sdk/web-app";
-// @ts-ignore
-import { baseplateFetchMocks, exitWithError, log } from "./cli-utils";
+// @ts-ignore jest mocks
+import {
+  baseplateFetchMocks,
+  resetBaseplateFetch,
+  baseplateFetchHistory,
+  exitWithError,
+  log,
+} from "./cli-utils";
+// @ts-ignore jest mocks
+import { testGuid } from "uuid";
+import { resetS3Mocks, s3ObjectsPut } from "../__mocks__/client-s3";
+import { cloneDeep } from "lodash-es";
 
 describe(`deploy command`, () => {
   beforeEach(resetMocks);
-  afterEach(resetMocks);
 
   it(`doesn't throw an error`, async () => {
     setMocks();
@@ -47,9 +56,10 @@ describe(`deploy command`, () => {
   it(`requires env vars when deploying to self hosted buckets`, async () => {
     setMocks({
       staticWebSettings(settings) {
-        settings.staticFiles.microfrontendProxy.environments.prod.useBaseplateHosting =
+        const newSettings = cloneDeep(settings);
+        newSettings.staticFiles!.microfrontendProxy!.environments!.prod!.useBaseplateHosting =
           false;
-        return settings;
+        return newSettings;
       },
     });
 
@@ -70,9 +80,10 @@ describe(`deploy command`, () => {
   it(`works with proper env variables, when deploying to self hosted buckets`, async () => {
     setMocks({
       staticWebSettings(settings) {
-        settings.staticFiles.microfrontendProxy.environments.prod.useBaseplateHosting =
+        const newSettings = cloneDeep(settings);
+        newSettings.staticFiles!.microfrontendProxy!.environments!.prod!.useBaseplateHosting =
           false;
-        return settings;
+        return newSettings;
       },
     });
 
@@ -101,9 +112,10 @@ describe(`deploy command`, () => {
 
     setMocks({
       staticWebSettings(settings) {
-        settings.staticFiles.microfrontendProxy.environments.prod.useBaseplateHosting =
+        const newSettings = cloneDeep(settings);
+        newSettings!.staticFiles!.microfrontendProxy!.environments!.prod!.useBaseplateHosting =
           false;
-        return settings;
+        return newSettings;
       },
     });
 
@@ -122,7 +134,37 @@ describe(`deploy command`, () => {
 
     throw Error("error expected when deployToken is missing");
   });
+
+  it(`supports the autoVersion option`, async () => {
+    setMocks();
+
+    await deploy({
+      baseplateToken: "sample",
+      microfrontendName: "navbar",
+      environmentName: "prod",
+      dir: "fixtures/simple",
+      entry: "navbar.js",
+      autoVersion: true,
+    });
+
+    const entryUrl = `/${testGuid}/navbar.js`;
+    const s3Key = `navbar/${testGuid}/navbar.js`;
+    const deployApiReqInit =
+      baseplateFetchHistory[`/api/orgs/${defaultOrgId}/deployments`];
+    expect(deployApiReqInit.body.changedMicrofrontends[0].entryUrl).toEqual(
+      entryUrl,
+    );
+    expect(s3ObjectsPut[s3Key]).toBeTruthy();
+    for (let key in s3ObjectsPut) {
+      expect(key.startsWith(`navbar/${testGuid}/`));
+    }
+  });
 });
+
+function printLogs() {
+  // eslint-disable-next-line no-console
+  console.log((log as jest.Mock).mock.calls);
+}
 
 const defaultOrgId = "orgId",
   defaultEnvId = "envId";
@@ -163,6 +205,9 @@ const defaultMicrofrontendList: EndpointGetMicrofrontendsResBody = {
       name: "navbar",
       useCustomerOrgKeyAsScope: true,
       scope: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deployedAt: new Date(),
     },
     {
       id: "settingsid",
@@ -171,6 +216,9 @@ const defaultMicrofrontendList: EndpointGetMicrofrontendsResBody = {
       name: "settings",
       useCustomerOrgKeyAsScope: true,
       scope: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deployedAt: new Date(),
     },
   ],
 };
@@ -199,6 +247,14 @@ const defaultCreatedDeployment: EndpointCreateDeploymentResBody = {
     // @ts-ignore
     status: "success",
   },
+  // @ts-ignore this can be removed once https://github.com/ConvexCooperative/baseplate-web-app/pull/441 is merged and published
+  importMap: {},
+  // @ts-ignore this can be removed once https://github.com/ConvexCooperative/baseplate-web-app/pull/441 is merged and published
+  importMapUrl: "https://dev-cdn.baseplate.cloud/convex/systemjs.import",
+  // @ts-ignore this can be removed once https://github.com/ConvexCooperative/baseplate-web-app/pull/441 is merged and published
+  changedMicrofrontendEntryUrls: [
+    "https://dev-cdn.baseplate.cloud/convex/apps/navbar/GUID/navbar.js",
+  ],
 };
 
 const defaultMocks: Mocks = {
@@ -237,17 +293,8 @@ function resetMocks() {
   log.mockClear();
   // @ts-ignore
   exitWithError.mockClear();
-  for (let key in baseplateFetchMocks) {
-    delete baseplateFetchMocks[key];
-  }
-
-  delete baseplateFetchMocks["/api/orgs/me"];
-  delete baseplateFetchMocks[`/api/orgs/${defaultOrgId}/static-web-settings`];
-  delete baseplateFetchMocks[`/api/orgs/${defaultOrgId}/microfrontends`];
-  delete baseplateFetchMocks[
-    `/api/orgs/${defaultOrgId}/environments/${defaultEnvId}/deployment-credentials`
-  ];
-  delete baseplateFetchMocks[`/api/orgs/${defaultOrgId}/deployments`];
+  resetBaseplateFetch();
+  resetS3Mocks();
 }
 
 interface Mocks {

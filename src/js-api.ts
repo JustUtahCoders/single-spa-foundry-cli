@@ -16,6 +16,7 @@ import {
   EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
 import { log, exitWithError, createBaseplateFetch } from "./cli-utils";
+import { v4 as uuidv4 } from "uuid";
 
 export async function deploy(args: DeployArgs) {
   const baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN;
@@ -145,8 +146,10 @@ export async function deploy(args: DeployArgs) {
     );
   }
 
+  const objectStoragePrefix = args.autoVersion ? `/${uuidv4()}/` : "/";
+
   for (let file of files) {
-    const Key = args.microfrontendName + "/" + file;
+    const Key = args.microfrontendName + objectStoragePrefix + file;
     log(`Uploading ${file} to ${Key}`, 1);
     await s3Client.send(
       new PutObjectCommand({
@@ -162,8 +165,7 @@ export async function deploy(args: DeployArgs) {
   log(
     `Step 4/4: Update Import Map to use new javascript entrypoint for ${args.microfrontendName}.`,
   );
-  const trailingSlashUrl = `/`;
-  const entryUrl = trailingSlashUrl + args.entry;
+  const entryUrl = objectStoragePrefix + args.entry;
 
   const deploymentResponse = await baseplateFetch<
     EndpointCreateDeploymentResBody,
@@ -178,7 +180,7 @@ export async function deploy(args: DeployArgs) {
         {
           microfrontendId: microfrontend.id,
           entryUrl,
-          trailingSlashUrl,
+          trailingSlashUrl: objectStoragePrefix,
         },
       ],
     },
@@ -189,6 +191,12 @@ export async function deploy(args: DeployArgs) {
       `Deployment failed. For more details, see deployment ${deploymentResponse.deployment.id}`,
     );
   } else {
+    // @ts-ignore this can be removed once https://github.com/ConvexCooperative/baseplate-web-app/pull/441 is merged and published
+    log(
+      `--> Newly deployed version of '${args.microfrontendName}' microfrontend is available at ${deploymentResponse.changedMicrofrontendEntryUrls[0]}`,
+    );
+    // @ts-ignore this can be removed once https://github.com/ConvexCooperative/baseplate-web-app/pull/441 is merged and published
+    log(`--> Import Map URL: ${deploymentResponse.importMapUrl}`);
     log("Deployment Successful!");
   }
 }
@@ -215,4 +223,5 @@ export interface DeployArgs {
   environmentName: string;
   dir: string;
   entry: string;
+  autoVersion?: boolean;
 }

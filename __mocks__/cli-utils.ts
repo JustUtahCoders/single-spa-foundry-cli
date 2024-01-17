@@ -3,7 +3,12 @@ import { DeployArgs } from "../src/js-api";
 
 export const exitWithError = jest.fn();
 export const log = jest.fn();
-export const baseplateFetchMocks = {};
+export let baseplateFetchMocks = {};
+export let baseplateFetchHistory = {};
+export function resetBaseplateFetch() {
+  baseplateFetchMocks = {};
+  baseplateFetchHistory = {};
+}
 export const createBaseplateFetch = (deployArgs: DeployArgs) => {
   return async function baseplateFetch(url, init): Promise<any> {
     const mock = baseplateFetchMocks[url];
@@ -12,6 +17,7 @@ export const createBaseplateFetch = (deployArgs: DeployArgs) => {
     }
 
     delete baseplateFetchMocks[url];
+    baseplateFetchHistory[url] = init;
 
     if (mock instanceof Error) {
       throw mock;
