@@ -1,7 +1,7 @@
 // Regrettably, many CI providers don't yet support NodeJS 18.
 // Otherwise, we'd use NodeJS' native fetch implementation
 import fetch, { RequestInit } from "node-fetch";
-import { DeployArgs, deploy } from "./js-api";
+import { DeployArgs, deploy } from "./js-api/js-api";
 
 export function exitWithError(err: string) {
   console.error(err);
@@ -52,8 +52,14 @@ export function createBaseplateFetch(deployArgs: DeployArgs) {
       );
     }
 
+    const contentType = response.headers.get("content-type");
+
     if (response.ok) {
-      return response.json() as Promise<Res>;
+      if (contentType && contentType.includes("application/json")) {
+        return response.json() as Promise<Res>;
+      } else {
+        return response;
+      }
     } else {
       console.error(await response.text());
       exitWithError(
