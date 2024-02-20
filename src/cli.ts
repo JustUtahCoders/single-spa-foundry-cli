@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { deploy } from "./js-api";
+import { deploy, downloadCiConfig } from "./js-api/js-api";
+import { DownloadCiConfigArgs } from "./js-api/ci-config";
 
 const baseplateToken = process.env.BASEPLATE_TOKEN;
 
@@ -39,6 +40,54 @@ yargs(hideBin(process.argv))
         dir: argv.dir as string,
         entry: argv.entry as string,
         autoVersion: argv.autoVersion,
+      });
+    },
+  )
+  .command(
+    "ci-config <microfrontendName>",
+    "download ci config file for a microfrontend",
+    (yargs) => {
+      return (
+        yargs
+          .positional("microfrontendName", {
+            describe:
+              "The name of the microfrontend to download a CI config file for",
+          })
+          .option("ciTool", {})
+          // Necessary for metadata api call
+          .demandOption("ciTool")
+          .option("packageManager", {
+            type: "string",
+            choices: ["npm", "yarn", "pnpm"],
+          })
+          .option("deployedBranch", {
+            type: "string",
+          })
+          .option("uploadDir", {
+            type: "string",
+          })
+          .option("entryFile", {
+            type: "string",
+          })
+      );
+    },
+    (argv) => {
+      if (!baseplateToken) {
+        throw Error(
+          `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`,
+        );
+      }
+      downloadCiConfig({
+        baseplateToken,
+        microfrontendName:
+          argv.microfrontendName as DownloadCiConfigArgs["microfrontendName"],
+        ciTool: argv.ciTool as DownloadCiConfigArgs["ciTool"],
+        packageManager:
+          argv.packageManager as DownloadCiConfigArgs["packageManager"],
+        deployedBranch:
+          argv.deployedBranch as DownloadCiConfigArgs["deployedBranch"],
+        uploadDir: argv.uploadDir as DownloadCiConfigArgs["uploadDir"],
+        entryFile: argv.entryFile as DownloadCiConfigArgs["entryFile"],
       });
     },
   )

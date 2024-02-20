@@ -13,10 +13,10 @@ import {
   baseplateFetchHistory,
   exitWithError,
   log,
-} from "./cli-utils";
+} from "../cli-utils";
 // @ts-ignore jest mocks
 import { testGuid } from "uuid";
-import { resetS3Mocks, s3ObjectsPut } from "../__mocks__/client-s3";
+import { resetS3Mocks, s3ObjectsPut } from "../../__mocks__/client-s3";
 import { cloneDeep } from "lodash-es";
 
 describe(`deploy command`, () => {
@@ -36,7 +36,7 @@ describe(`deploy command`, () => {
     expect(exitWithError).not.toHaveBeenCalled();
     const logs = [
       "Deploying navbar to environment prod",
-      "Step 1/4: Authenticate with baseplate API and retrieve organization settings",
+      "Step 1/4: Authenticate with Baseplate API and retrieve organization settings",
       "Step 2/4: Determine microfrontend entrypoint and find all assets to upload.",
       "Found 2 files to upload",
       "navbar.css",

@@ -15,7 +15,7 @@ import {
   EndpointGetStaticWebSettingsResBody,
   EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
-import { log, exitWithError, createBaseplateFetch } from "./cli-utils";
+import { log, exitWithError, createBaseplateFetch } from "../cli-utils";
 import { v4 as uuidv4 } from "uuid";
 
 export async function deploy(args: DeployArgs) {
@@ -32,7 +32,7 @@ export async function deploy(args: DeployArgs) {
   );
 
   log(
-    `Step 1/4: Authenticate with baseplate API and retrieve organization settings`,
+    `Step 1/4: Authenticate with Baseplate API and retrieve organization settings`,
   );
   const baseplateFetch = createBaseplateFetch(args);
 

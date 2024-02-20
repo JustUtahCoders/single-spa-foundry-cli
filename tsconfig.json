@@ -1,5 +1,5 @@
 {
-  "files": ["src/cli.ts", "src/js-api.ts"],
+  "files": ["src/cli.ts", "src/js-api/js-api.ts"],
   "include": ["src/declarations.d.ts"],
   "compilerOptions": {
     "esModuleInterop": true,

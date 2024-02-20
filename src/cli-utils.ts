@@ -1,7 +1,7 @@
 // Regrettably, many CI providers don't yet support NodeJS 18.
 // Otherwise, we'd use NodeJS' native fetch implementation
 import fetch, { RequestInit } from "node-fetch";
-import { DeployArgs, deploy } from "./js-api";
+import { DeployArgs } from "./js-api/deploy";
 
 export function exitWithError(err: string) {
   console.error(err);
@@ -21,7 +21,7 @@ export function log(str: string, indentationLevel = 0) {
   console.log(prefix + str);
 }
 
-export function createBaseplateFetch(deployArgs: DeployArgs) {
+export function createBaseplateFetch(deployArgs: CreateFetchArgs) {
   return async function baseplateFetch<Res = any, ReqBody = any>(
     url: string,
     options: BaseplateRequestInit<ReqBody> = {},
@@ -52,8 +52,14 @@ export function createBaseplateFetch(deployArgs: DeployArgs) {
       );
     }
 
+    const contentType = response.headers.get("content-type");
+
     if (response.ok) {
-      return response.json() as Promise<Res>;
+      if (contentType && contentType.includes("application/json")) {
+        return response.json() as Promise<Res>;
+      } else {
+        return response;
+      }
     } else {
       console.error(await response.text());
       exitWithError(
@@ -61,6 +67,10 @@ export function createBaseplateFetch(deployArgs: DeployArgs) {
       );
     }
   };
+}
+
+interface CreateFetchArgs {
+  baseplateToken?: string;
 }
 
 type BaseplateRequestInit<RequestBody = object> = Omit<RequestInit, "body"> & {
