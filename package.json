@@ -1,6 +1,6 @@
 {
   "name": "@baseplate-sdk/cli",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Deployment CLI for Baseplate",
   "type": "module",
   "main": "lib/js-api.js",

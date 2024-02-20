@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 2.1.0
+
+### Minor Changes
+
+- [#24](https://github.com/ConvexCooperative/baseplate-cli/pull/24) [`1a497ee`](https://github.com/ConvexCooperative/baseplate-cli/commit/1a497eed849eb761c1b953b8fb389906be3a83ed) Thanks [@joeldenning](https://github.com/joeldenning)! - Implement ci-config command and downloadCiConfig js api
+
 ## 2.0.0
 
 ### Major Changes
