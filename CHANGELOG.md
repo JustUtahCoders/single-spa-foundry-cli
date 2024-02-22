@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 2.1.1
+
+### Patch Changes
+
+- [#26](https://github.com/ConvexCooperative/baseplate-cli/pull/26) [`8574ccf`](https://github.com/ConvexCooperative/baseplate-cli/commit/8574ccf000a9b4e323b84a0b6fd72834269c2547) Thanks [@joeldenning](https://github.com/joeldenning)! - Fix --version flag in published code
+
 ## 2.1.0
 
 ### Minor Changes
