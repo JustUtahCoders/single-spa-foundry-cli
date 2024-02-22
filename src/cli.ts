@@ -3,6 +3,7 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { deploy, downloadCiConfig } from "./js-api/js-api";
 import { DownloadCiConfigArgs } from "./js-api/ci-config";
+import packageJson from "../package.json" with { type: "json" };
 
 const baseplateToken = process.env.BASEPLATE_TOKEN;
 
@@ -91,6 +92,7 @@ yargs(hideBin(process.argv))
       });
     },
   )
+  .version(packageJson.version)
   .demandCommand(1)
   .scriptName("baseplate")
   .parse();

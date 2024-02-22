@@ -31,6 +31,9 @@ devDependencies:
   '@babel/eslint-parser':
     specifier: ^7.23.3
     version: 7.23.3(@babel/core@7.23.7)(eslint@8.56.0)
+  '@babel/plugin-syntax-import-attributes':
+    specifier: ^7.23.3
+    version: 7.23.3(@babel/core@7.23.7)
   '@babel/preset-typescript':
     specifier: ^7.23.3
     version: 7.23.3(@babel/core@7.23.7)
@@ -1396,6 +1399,16 @@ packages:
 
   /@babel/plugin-syntax-class-properties@7.12.13(@babel/core@7.23.7):
     resolution: {integrity: sha512-fm4idjKla0YahUNgFNLCB0qySdsoPiZP3iQE3rky0mBUtMZ23yDJ9SJdg6dXTSDnulOVqiF3Hgr9nbXvXTQZYA==}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.23.7
+      '@babel/helper-plugin-utils': 7.22.5
+    dev: true
+
+  /@babel/plugin-syntax-import-attributes@7.23.3(@babel/core@7.23.7):
+    resolution: {integrity: sha512-pawnE0P9g10xgoP7yKr6CK63K2FMsTE+FZidZO/1PwRdzmAPVs+HS1mAURUsgaoxammTJvULUdIkEK0gOcU2tA==}
+    engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
