@@ -1,9 +1,4 @@
 {
   "presets": ["@babel/preset-typescript"],
-  "plugins": [
-    [
-      "@babel/plugin-syntax-import-attributes",
-      { "deprecatedAssertSyntax": false },
-    ],
-  ],
+  "plugins": ["@babel/plugin-syntax-import-attributes"],
 }
