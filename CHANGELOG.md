@@ -1,5 +1,11 @@
 # @baseplate-sdk/cli
 
+## 2.1.2
+
+### Patch Changes
+
+- [#27](https://github.com/ConvexCooperative/baseplate-cli/pull/27) [`e9243bc`](https://github.com/ConvexCooperative/baseplate-cli/commit/e9243bc8cedc561d9671cdc76223732d00b16d89) Thanks [@joeldenning](https://github.com/joeldenning)! - Fix path to bin in package.json
+
 ## 2.1.1
 
 ### Patch Changes
