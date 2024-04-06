@@ -1,27 +1,25 @@
 // Regrettably, many CI providers don't yet support NodeJS 18.
 // Otherwise, we'd use NodeJS' native fetch implementation
 import fetch, { RequestInit } from "node-fetch";
-import { DeployArgs } from "./js-api/deploy";
+import { error } from "./cli-logger";
 
 export function exitWithError(err: string) {
-  console.error(err);
+  error(err);
   process.exit(1);
 }
 
-export function log(str: string, indentationLevel = 0) {
-  let prefix = "";
-  for (let i = 0; i < indentationLevel; i++) {
-    prefix += "--";
-  }
-  if (prefix) {
-    prefix += "> ";
-  }
+export function checkBaseplateToken(args: BaseplateTokenArgs): string {
+  const baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN;
 
-  // eslint-disable-next-line no-console
-  console.log(prefix + str);
+  if (!baseplateToken) {
+    exitWithError(
+      `baseplate cli requires a baseplateToken to be passed via arguments or the BASEPLATE_TOKEN environment variable`,
+    );
+  }
+  return baseplateToken;
 }
 
-export function createBaseplateFetch(deployArgs: CreateFetchArgs) {
+export function createBaseplateFetch(deployArgs: BaseplateTokenArgs) {
   return async function baseplateFetch<Res = any, ReqBody = any>(
     url: string,
     options: BaseplateRequestInit<ReqBody> = {},
@@ -35,8 +33,7 @@ export function createBaseplateFetch(deployArgs: CreateFetchArgs) {
       options.headers["content-type"] = "application/json";
     }
 
-    const baseplateToken =
-      deployArgs.baseplateToken ?? process.env.BASEPLATE_TOKEN;
+    const baseplateToken = checkBaseplateToken(deployArgs);
     options.headers["Authorization"] = `token ${baseplateToken}`;
 
     const baseUrl = process.env.BASEPLATE_API || "https://baseplate.cloud";
@@ -69,7 +66,7 @@ export function createBaseplateFetch(deployArgs: CreateFetchArgs) {
   };
 }
 
-interface CreateFetchArgs {
+interface BaseplateTokenArgs {
   baseplateToken?: string;
 }
 

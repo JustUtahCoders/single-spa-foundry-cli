@@ -3,17 +3,13 @@ import {
   EndpointGetMicrofrontendsResBody,
   EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
-import { createBaseplateFetch, exitWithError, log } from "../cli-utils";
+import {checkBaseplateToken, createBaseplateFetch, exitWithError} from "../cli-utils";
 import fs from "node:fs/promises";
+import { log } from "../cli-logger";
 
 export async function downloadCiConfig(args: DownloadCiConfigArgs) {
-  const baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN;
+  const baseplateToken = checkBaseplateToken(args);
 
-  if (!baseplateToken) {
-    throw Error(
-      `baseplate cli requires a baseplateToken to be passed via arguments or the BASEPLATE_TOKEN environment variable`,
-    );
-  }
 
   log(
     `Downloading CI Configuration file for microfrontend '${args.microfrontendName}'`,

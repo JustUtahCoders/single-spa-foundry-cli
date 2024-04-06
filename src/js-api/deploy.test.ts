@@ -12,12 +12,12 @@ import {
   resetBaseplateFetch,
   baseplateFetchHistory,
   exitWithError,
-  log,
 } from "../cli-utils";
 // @ts-ignore jest mocks
 import { testGuid } from "uuid";
 import { resetS3Mocks, s3ObjectsPut } from "../../__mocks__/client-s3";
 import { cloneDeep } from "lodash-es";
+import { log } from "../cli-logger";
 
 describe(`deploy command`, () => {
   beforeEach(resetMocks);

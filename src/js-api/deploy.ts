@@ -15,17 +15,16 @@ import {
   EndpointGetStaticWebSettingsResBody,
   EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
-import { log, exitWithError, createBaseplateFetch } from "../cli-utils";
+import {
+  exitWithError,
+  createBaseplateFetch,
+  checkBaseplateToken,
+} from "../cli-utils";
 import { v4 as uuidv4 } from "uuid";
+import { log } from "../cli-logger";
 
 export async function deploy(args: DeployArgs) {
-  const baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN;
-
-  if (!baseplateToken) {
-    throw Error(
-      `baseplate cli requires a baseplateToken to be passed via arguments or the BASEPLATE_TOKEN environment variable`,
-    );
-  }
+  const baseplateToken = checkBaseplateToken(args);
 
   log(
     `Deploying ${args.microfrontendName} to environment ${args.environmentName}`,

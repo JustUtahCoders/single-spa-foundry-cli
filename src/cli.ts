@@ -1,13 +1,27 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { deploy, downloadCiConfig } from "./js-api/js-api";
+import { deploy, downloadCiConfig, list } from "./js-api/js-api";
 import { DownloadCiConfigArgs } from "./js-api/ci-config";
 import packageJson from "../package.json" with { type: "json" };
 
 const baseplateToken = process.env.BASEPLATE_TOKEN;
 
 yargs(hideBin(process.argv))
+  .command(
+    "ls <resource>",
+    "list resource",
+    (yargs) => {
+      return yargs.positional("resource", {
+        describe: "The type of the resource you wish to list [mfe | webapp]",
+      });
+    },
+    (argv) =>
+      list({
+        baseplateToken,
+        resource: argv.resource as "mfe" | "webapp",
+      }),
+  )
   .command(
     "deploy <microfrontendName>",
     "deploy a microfrontend",
