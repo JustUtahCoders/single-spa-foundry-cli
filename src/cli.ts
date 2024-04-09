@@ -1,25 +1,46 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { deploy, downloadCiConfig, list } from "./js-api/js-api";
+import {create, deploy, downloadCiConfig, list} from "./js-api/js-api";
 import { DownloadCiConfigArgs } from "./js-api/ci-config";
 import packageJson from "../package.json" with { type: "json" };
 
 const baseplateToken = process.env.BASEPLATE_TOKEN;
 
 yargs(hideBin(process.argv))
+    .command(
+        "create mfe <packageName>",
+        "create mfe resource",
+        (yargs) => {
+            return yargs.positional("packageName", {
+                describe: "The package name including scope",
+            }).option("framework", {
+                default: "react",
+            }).option("packageManager", {
+                default: "npm",
+            });
+        },
+        (argv) =>
+            create({
+                baseplateToken,
+                resource: "mfe",
+                packageName: argv.packageName,
+                framework: argv.framework,
+            }),
+    )
   .command(
     "ls <resource>",
     "list resource",
     (yargs) => {
       return yargs.positional("resource", {
-        describe: "The type of the resource you wish to list [mfe | webapp]",
+        default: 'mfe',
+        describe: "The type of the resource you wish to list [mfe | webapp | env]",
       });
     },
     (argv) =>
       list({
         baseplateToken,
-        resource: argv.resource as "mfe" | "webapp",
+        resource: argv.resource as "mfe" | "webapp" | "env",
       }),
   )
   .command(
