@@ -1,18 +1,21 @@
 #!/usr/bin/env node
-import yargs from "yargs";
+import yargs, {Argv} from "yargs";
 import { hideBin } from "yargs/helpers";
-import {create, deploy, downloadCiConfig, list} from "./js-api/js-api";
+import {create, deploy, downloadCiConfig, list, login} from "./js-api/js-api";
 import { DownloadCiConfigArgs } from "./js-api/ci-config";
 import packageJson from "../package.json" with { type: "json" };
 
-const baseplateToken = process.env.BASEPLATE_TOKEN;
+const defaultArgs = (yargs: Argv<any>) => yargs.option("baseplateToken", {
+        describe: "Service account token",
+        type: "string"
+});
 
 yargs(hideBin(process.argv))
     .command(
         "create mfe <packageName>",
         "create mfe resource",
         (yargs) => {
-            return yargs.positional("packageName", {
+            return defaultArgs(yargs).positional("packageName", {
                 describe: "The package name including scope",
             }).option("framework", {
                 default: "react",
@@ -22,7 +25,7 @@ yargs(hideBin(process.argv))
         },
         (argv) =>
             create({
-                baseplateToken,
+                baseplateToken: argv.baseplateToken,
                 resource: "mfe",
                 packageName: argv.packageName,
                 framework: argv.framework,
@@ -32,22 +35,36 @@ yargs(hideBin(process.argv))
     "ls <resource>",
     "list resource",
     (yargs) => {
-      return yargs.positional("resource", {
+      return defaultArgs(yargs).positional("resource", {
         default: 'mfe',
         describe: "The type of the resource you wish to list [mfe | webapp | env]",
       });
     },
     (argv) =>
       list({
-        baseplateToken,
+        baseplateToken: argv.baseplateToken,
         resource: argv.resource as "mfe" | "webapp" | "env",
       }),
   )
+    .command(
+        "login <baseplateToken>",
+        "login to baseplate console using baseplate token",
+        (yargs) => {
+            return yargs.positional("baseplateToken", {
+                describe: "Service account token generated through console",
+                type: "string"
+            });
+        },
+        (argv) =>
+            login({
+                baseplateToken: argv.baseplateToken,
+            }),
+    )
   .command(
     "deploy <microfrontendName>",
     "deploy a microfrontend",
     (yargs) => {
-      return yargs
+      return defaultArgs(yargs)
         .positional("microfrontendName", {
           describe: "The name of the microfrontend you wish to deploy",
         })
@@ -64,13 +81,8 @@ yargs(hideBin(process.argv))
         });
     },
     (argv) => {
-      if (!baseplateToken) {
-        throw Error(
-          `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`,
-        );
-      }
       deploy({
-        baseplateToken,
+        baseplateToken: argv.baseplateToken,
         microfrontendName: argv.microfrontendName as string,
         environmentName: argv.environment as string,
         dir: argv.dir as string,
@@ -84,7 +96,7 @@ yargs(hideBin(process.argv))
     "download ci config file for a microfrontend",
     (yargs) => {
       return (
-        yargs
+          defaultArgs(yargs)
           .positional("microfrontendName", {
             describe:
               "The name of the microfrontend to download a CI config file for",
@@ -108,13 +120,8 @@ yargs(hideBin(process.argv))
       );
     },
     (argv) => {
-      if (!baseplateToken) {
-        throw Error(
-          `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`,
-        );
-      }
       downloadCiConfig({
-        baseplateToken,
+        baseplateToken:argv.baseplateToken,
         microfrontendName:
           argv.microfrontendName as DownloadCiConfigArgs["microfrontendName"],
         ciTool: argv.ciTool as DownloadCiConfigArgs["ciTool"],

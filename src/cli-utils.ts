@@ -1,7 +1,10 @@
 // Regrettably, many CI providers don't yet support NodeJS 18.
 // Otherwise, we'd use NodeJS' native fetch implementation
 import fetch, { RequestInit } from "node-fetch";
-import { error } from "./cli-logger";
+import {error, log, secondary} from "./cli-logger";
+import {storageProvider} from "./cli-storage";
+
+const storage = await storageProvider();
 
 export function exitWithError(err: string) {
   error(err);
@@ -9,14 +12,14 @@ export function exitWithError(err: string) {
 }
 
 export function checkBaseplateToken(args: BaseplateTokenArgs): string {
-  const baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN;
+  let baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN ?? storage.get("baseplateToken");
 
   if (!baseplateToken) {
     exitWithError(
       `baseplate cli requires a baseplateToken to be passed via arguments or the BASEPLATE_TOKEN environment variable`,
     );
   }
-  return baseplateToken;
+  return baseplateToken as string;
 }
 
 export function createBaseplateFetch(deployArgs: BaseplateTokenArgs) {
@@ -43,7 +46,7 @@ export function createBaseplateFetch(deployArgs: BaseplateTokenArgs) {
     try {
       response = await fetch(baseUrl + url, options as RequestInit);
     } catch (err) {
-      console.error(err.message);
+      log(secondary(err.message), 1);
       exitWithError(
         `Did not receive valid HTTP response from Baseplate API for url ${url}`,
       );
@@ -58,7 +61,7 @@ export function createBaseplateFetch(deployArgs: BaseplateTokenArgs) {
         return response;
       }
     } else {
-      console.error(await response.text());
+      log(secondary(await response.text()), 1);
       exitWithError(
         `While calling ${url}, Baseplate API responded with status ${response.status}`,
       );
