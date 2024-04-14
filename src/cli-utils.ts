@@ -1,8 +1,8 @@
 // Regrettably, many CI providers don't yet support NodeJS 18.
 // Otherwise, we'd use NodeJS' native fetch implementation
 import fetch, { RequestInit } from "node-fetch";
-import {error, log, secondary} from "./cli-logger";
-import {storageProvider} from "./cli-storage";
+import { error, log, secondary } from "./cli-logger";
+import { storageProvider } from "./cli-storage";
 import p from "node:path";
 import fs from "node:fs";
 
@@ -14,7 +14,10 @@ export function exitWithError(err: string) {
 }
 
 export function checkBaseplateToken(args: BaseplateTokenArgs): string {
-  let baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN ?? storage.get("baseplateToken");
+  let baseplateToken =
+    args.baseplateToken ??
+    process.env.BASEPLATE_TOKEN ??
+    storage.get("baseplateToken");
 
   if (!baseplateToken) {
     exitWithError(

@@ -9,4 +9,3 @@ export const secondary = chalk.gray;
 export const log = jest.fn();
 export const error = jest.fn();
 export const logTable = jest.fn();
-

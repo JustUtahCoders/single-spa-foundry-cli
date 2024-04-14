@@ -1,11 +1,12 @@
 import { jest } from "@jest/globals";
 import { DeployArgs } from "../src/js-api";
 
-
 export function checkBaseplateToken(args: any): string {
   const baseplateToken = args.baseplateToken ?? process.env.BASEPLATE_TOKEN;
   if (!baseplateToken) {
-    throw Error(`baseplate cli requires a baseplateToken to be passed via arguments or the BASEPLATE_TOKEN environment variable`);
+    throw Error(
+      `baseplate cli requires a baseplateToken to be passed via arguments or the BASEPLATE_TOKEN environment variable`,
+    );
   }
   return baseplateToken;
 }

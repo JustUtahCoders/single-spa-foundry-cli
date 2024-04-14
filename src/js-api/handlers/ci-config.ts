@@ -3,16 +3,19 @@ import {
   EndpointGetMicrofrontendsResBody,
   EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
-import {checkBaseplateToken, createBaseplateFetch, createDirs, exitWithError} from "../../cli-utils";
+import {
+  checkBaseplateToken,
+  createBaseplateFetch,
+  createDirs,
+  exitWithError,
+} from "../../cli-utils";
 import fsP from "node:fs/promises";
 import path from "node:path";
-
 
 import { log } from "../../cli-logger";
 
 export async function downloadCiConfig(args: DownloadCiConfigArgs) {
   const baseplateToken = checkBaseplateToken(args);
-
 
   log(
     `Downloading CI Configuration file for microfrontend '${args.microfrontendName}'`,
@@ -69,8 +72,10 @@ export async function downloadCiConfig(args: DownloadCiConfigArgs) {
 
   const blob = await response.blob();
   const fileContents = await blob.text();
-  const prefix = args.workingDir ?? './';
-  const filePath =path.normalize(path.resolve(prefix , metadata.ciConfigFilePath));
+  const prefix = args.workingDir ?? "./";
+  const filePath = path.normalize(
+    path.resolve(prefix, metadata.ciConfigFilePath),
+  );
   createDirs(path.resolve(filePath, "../"));
   await fsP.writeFile(filePath, fileContents, "utf-8");
 
@@ -87,4 +92,3 @@ export interface DownloadCiConfigArgs {
   entryFile?: string;
   workingDir?: string;
 }
-
