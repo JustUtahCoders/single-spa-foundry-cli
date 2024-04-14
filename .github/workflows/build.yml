@@ -1,0 +1,29 @@
+name: Build and Test
+
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.14.0
+      - run: git checkout main && git checkout $GITHUB_SHA
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+      - run: pnpm test
+      - run: pnpm run check-format
+      - run: pnpm run lint
+      - run: pnpm exec changeset status
