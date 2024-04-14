@@ -1,27 +1,28 @@
 import FullEnvironment from "yeoman-environment";
-import {info, log, secondary} from "../cli-logger";
+import {log, secondary} from "../cli-logger";
+import p from "node:path";
 
 const env = new FullEnvironment();
-export const runSingleSpaGenerator = (args: CreateSingleSpaArgument)=>{
-    import("generator-single-spa").then(m=>{
-        let arg = ' ';
-        arg+= `--dir ${args.dir} `;
-        arg+= `--framework ${args.framework} `;
-        arg+= `--orgName ${args.orgName} `;
-        arg+= `--projectName ${args.projectName} `;
-        arg+= `--moduleType ${args.moduleType} `;
-        arg+= `--packageManager ${args.packageManager} `;
+export const runSingleSpaGenerator = async (args: CreateSingleSpaArgument)=>{
+    let arg = ' ';
+    arg+= `--dir ${args.dir} `;
+    arg+= `--framework ${args.framework} `;
+    arg+= `--orgName ${args.orgName} `;
+    arg+= `--projectName ${args.projectName} `;
+    arg+= `--moduleType ${args.moduleType} `;
+    arg+= `--packageManager ${args.packageManager} `;
 
-        if(args.framework=="react"){
-            arg+= `--typescript ${args.typescript} `;
-        }
+    if(args.framework=="react"){
+        arg+= `--typescript ${args.typescript} `;
+    }
 
-        log(secondary.inverse("RUNNING") + secondary(` create-single-spa ${arg}`))
-        // @ts-ignore
-        env.registerStub(m.default,"generator-single-spa");
-        // @ts-ignore
-        env.run(`generator-single-spa ${arg} --skipInstall`,"");
-    });
+    log(secondary.inverse("RUNNING") + secondary(` create-single-spa ${arg}`));
+
+    const generator = await import("generator-single-spa")
+    // @ts-ignore
+    env.registerStub(generator.default,"generator-single-spa");
+    // @ts-ignore
+    await env.run(`generator-single-spa ${arg} --skipInstall`,"");
 }
 
 export interface CreateSingleSpaArgument {
@@ -33,7 +34,15 @@ export interface CreateSingleSpaArgument {
     moduleType: "app-parcel" | "util-module" | "root-config",
     packageManager: "yarn" | "npm" | "pnpm"
 }
+export function determineDirectory(frameworkArg: string, dir: string): string{
+    //generator-single-spa dir for angular work different
+    if(determineFramework(frameworkArg)=="angular"){
+        return  p.dirname(dir);
+    }else {
+        return dir;
+    }
 
+}
 export function determineFramework(frameworkArg: string): "none" | "react" | "vue" | "angular" | "svelte"{
     if(!frameworkArg){
         return "react";
@@ -64,7 +73,7 @@ export function determinePackageManager(packageManager: string): "yarn" | "npm" 
         case "yarn":
             return "yarn";
         case "pnpm":
-            return "yarn";
+            return "pnpm";
         default:
             return "npm";
     }

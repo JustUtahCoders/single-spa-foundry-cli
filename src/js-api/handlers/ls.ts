@@ -1,11 +1,11 @@
-import {createBaseplateFetch, exitWithError} from "../cli-utils";
+import {createBaseplateFetch, exitWithError} from "../../cli-utils";
 import {
   EndpointGetCustomerWebAppsResBody,
   EndpointGetEnvironmentsResBody,
   EndpointGetMicrofrontendsResBody,
   EndpointGetMyCustomerOrgResBody,
 } from "@baseplate-sdk/web-app";
-import {logTable, warning} from "../cli-logger";
+import {logTable, warning} from "../../cli-logger";
 
 export async function list(args: ListArgs) {
   const baseplateFetch = createBaseplateFetch(args);

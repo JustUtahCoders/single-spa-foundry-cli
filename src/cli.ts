@@ -2,7 +2,7 @@
 import yargs, {Argv} from "yargs";
 import { hideBin } from "yargs/helpers";
 import {create, deploy, downloadCiConfig, list, login} from "./js-api/js-api";
-import { DownloadCiConfigArgs } from "./js-api/ci-config";
+import { DownloadCiConfigArgs } from "./js-api/handlers/ci-config";
 import packageJson from "../package.json" with { type: "json" };
 
 const defaultArgs = (yargs: Argv<any>) => yargs.option("baseplateToken", {
@@ -19,9 +19,26 @@ yargs(hideBin(process.argv))
                 describe: "The package name including scope",
             }).option("framework", {
                 default: "react",
+            })
+                // Necessary for ci-config command
+                .option("ciTool", {
+                type: "string",
+                default: "github",
+                choices: ["github", "azure"],
             }).option("packageManager", {
-                default: "npm",
-            });
+                    type: "string",
+                    default: "npm",
+                    choices: ["npm", "yarn", "pnpm"],
+                })
+                .option("deployedBranch", {
+                    type: "string",
+                })
+                .option("uploadDir", {
+                    type: "string",
+                })
+                .option("entryFile", {
+                    type: "string",
+                });
         },
         (argv) =>
             create({
@@ -29,6 +46,11 @@ yargs(hideBin(process.argv))
                 resource: "mfe",
                 packageName: argv.packageName,
                 framework: argv.framework,
+                ciTool: argv.ciTool,
+                packageManager: argv.packageManager,
+                deployedBranch: argv.deployedBranch,
+                uploadDir: argv.uploadDir,
+                entryFile: argv.entryFile,
             }),
     )
   .command(

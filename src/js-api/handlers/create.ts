@@ -1,15 +1,18 @@
-import {createBaseplateFetch, exitWithError} from "../cli-utils";
+import {createBaseplateFetch, createDirs, exitWithError} from "../../cli-utils";
 import {
     EndpointCreateMicrofrontendReqBody,
     EndpointCreateMicrofrontendResBody,
     EndpointGetMyCustomerOrgResBody
 } from "@baseplate-sdk/web-app";
-import {info, log, warning} from "../cli-logger";
+import {info, log, success, warning} from "../../cli-logger";
 import {
+    determineDirectory,
     determineFramework,
     determinePackageManager,
     runSingleSpaGenerator
-} from "../singleSpaGenerator/singleSpaGenerator"
+} from "../../singleSpaGenerator/singleSpaGenerator"
+import {downloadCiConfig} from "./ci-config";
+import path from "node:path";
 
 export async function create(args: any & CreateArgs) {
     const baseplateFetch = createBaseplateFetch(args);
@@ -67,8 +70,9 @@ export class ResourceCreator {
             {body:{name, useCustomerOrgKeyAsScope, scope: useCustomerOrgKeyAsScope ? null : scope}, method: "post"}
         );
 
-        runSingleSpaGenerator({
-            dir: `./${args.packageName}`,
+        createDirs(path.resolve(`./${args.packageName}`, "../"));
+        await runSingleSpaGenerator({
+            dir: `./${determineDirectory(args.framework, args.packageName)}`,
             orgName: scope ?? this.orgKey,
             projectName: name,
             typescript: true,
@@ -76,6 +80,28 @@ export class ResourceCreator {
             packageManager: determinePackageManager(args.packageManager),
             moduleType: "app-parcel",
         });
+
+        await downloadCiConfig({
+            baseplateToken: args.baseplateToken as string,
+            microfrontendName: name as string,
+            ciTool: args.ciTool,
+            packageManager: args.packageManager,
+            deployedBranch: args.deployedBranch,
+            workingDir: `./${args.packageName}`
+        });
+
+        log(success(`${args.packageName} Created Successfully!`));
+        log("", 8);
+        log(info(`INSTRUCTION TO START`));
+        log(`1: cd ${args.packageName}`)
+        log(`2: ${args.packageManager} install`);
+        log(`3: visit ${args.ciTool == "github" 
+            ? "https://baseplate.cloud/docs/deployments/github-action" 
+            : args.ciTool == "azure" 
+                ? "https://baseplate.cloud/docs/deployments/azure-pipelines" 
+                : "https://baseplate.cloud/docs/deployments/ci-configuration"
+        } to get more info on baseplate.cloud ci configuration`);
+
     }
 
 
@@ -96,5 +122,10 @@ export interface CreateArgs {
 export interface CreateMicrofrontendArgs extends CreateArgs {
     packageName: string;
     framework: string;
-    packageManager: string;
+    ciTool: "github" | "azure";
+    packageManager?: "npm" | "yarn" | "pnpm";
+    deployedBranch?: string;
+    uploadDir?: string;
+    entryFile?: string;
+    workingDir?: string;
 }

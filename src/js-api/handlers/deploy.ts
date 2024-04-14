@@ -19,9 +19,9 @@ import {
   exitWithError,
   createBaseplateFetch,
   checkBaseplateToken,
-} from "../cli-utils";
+} from "../../cli-utils";
 import { v4 as uuidv4 } from "uuid";
-import { log } from "../cli-logger";
+import { log } from "../../cli-logger";
 
 export async function deploy(args: DeployArgs) {
   const baseplateToken = checkBaseplateToken(args);

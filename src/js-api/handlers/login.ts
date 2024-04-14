@@ -1,7 +1,7 @@
 import {EndpointGetMyCustomerOrgResBody} from "@baseplate-sdk/web-app";
-import {createBaseplateFetch} from "../cli-utils";
-import {log, success} from "../cli-logger";
-import {storageProvider} from "../cli-storage";
+import {createBaseplateFetch} from "../../cli-utils";
+import {log, success} from "../../cli-logger";
+import {storageProvider} from "../../cli-storage";
 
 const storage = await storageProvider();
 

@@ -3,6 +3,8 @@
 import fetch, { RequestInit } from "node-fetch";
 import {error, log, secondary} from "./cli-logger";
 import {storageProvider} from "./cli-storage";
+import p from "node:path";
+import fs from "node:fs";
 
 const storage = await storageProvider();
 
@@ -67,6 +69,16 @@ export function createBaseplateFetch(deployArgs: BaseplateTokenArgs) {
       );
     }
   };
+}
+
+export function createDirs(dirPath) {
+  const parent = p.dirname(dirPath);
+  if (!fs.existsSync(parent)) {
+    createDirs(parent);
+  }
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath);
+  }
 }
 
 interface BaseplateTokenArgs {
