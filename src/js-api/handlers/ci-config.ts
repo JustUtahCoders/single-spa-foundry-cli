@@ -7,8 +7,10 @@ import {
   createBaseplateFetch,
   exitWithError,
   checkBaseplateToken,
+  createDirsSync,
 } from "../../cli-utils";
-import fs from "node:fs/promises";
+import fsP from "node:fs/promises";
+import path from "node:path";
 import { log } from "../../cli-logger";
 
 export async function downloadCiConfig(args: DownloadCiConfigArgs) {
@@ -69,9 +71,14 @@ export async function downloadCiConfig(args: DownloadCiConfigArgs) {
 
   const blob = await response.blob();
   const fileContents = await blob.text();
-  await fs.writeFile(metadata.ciConfigFilePath, fileContents, "utf-8");
+  const prefix = args.workingDir ?? "./";
+  const filePath = path.normalize(
+    path.resolve(prefix, metadata.ciConfigFilePath),
+  );
+  createDirsSync(path.resolve(filePath, "../"));
+  await fsP.writeFile(filePath, fileContents, "utf-8");
 
-  log(`CI Config file written to ${metadata.ciConfigFilePath}!`);
+  log(`CI Config file written to ${filePath}!`);
 }
 
 export interface DownloadCiConfigArgs {
@@ -82,4 +89,5 @@ export interface DownloadCiConfigArgs {
   deployedBranch?: string;
   uploadDir?: string;
   entryFile?: string;
+  workingDir?: string;
 }

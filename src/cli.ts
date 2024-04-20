@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import yargs, { Argv } from "yargs";
 import { hideBin } from "yargs/helpers";
-import { deploy, downloadCiConfig, login } from "./js-api/js-api";
+import { create, deploy, downloadCiConfig, login } from "./js-api/js-api";
 import { DownloadCiConfigArgs } from "./js-api/handlers/ci-config";
 import packageJson from "../package.json" with { type: "json" };
 
@@ -12,6 +12,53 @@ const defaultArgs = (yargs: Argv<any>) =>
   });
 
 yargs(hideBin(process.argv))
+  .command(
+    "create mfe <packageName>",
+    "create mfe resource",
+    (yargs) => {
+      return (
+        defaultArgs(yargs)
+          .positional("packageName", {
+            describe: "The package name including scope",
+          })
+          .option("framework", {
+            default: "react",
+          })
+          // Necessary for ci-config command
+          .option("ciTool", {
+            type: "string",
+            default: "github",
+            choices: ["github", "azure"],
+          })
+          .option("packageManager", {
+            type: "string",
+            default: "npm",
+            choices: ["npm", "yarn", "pnpm"],
+          })
+          .option("deployedBranch", {
+            type: "string",
+          })
+          .option("uploadDir", {
+            type: "string",
+          })
+          .option("entryFile", {
+            type: "string",
+          })
+      );
+    },
+    (argv) =>
+      create({
+        baseplateToken: argv.baseplateToken,
+        resource: "mfe",
+        packageName: argv.packageName,
+        framework: argv.framework,
+        ciTool: argv.ciTool,
+        packageManager: argv.packageManager,
+        deployedBranch: argv.deployedBranch,
+        uploadDir: argv.uploadDir,
+        entryFile: argv.entryFile,
+      }),
+  )
   .command(
     "login <baseplateToken>",
     "login to baseplate console using baseplate token",
