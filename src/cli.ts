@@ -1,18 +1,36 @@
 #!/usr/bin/env node
-import yargs from "yargs";
+import yargs, { Argv } from "yargs";
 import { hideBin } from "yargs/helpers";
-import { deploy, downloadCiConfig } from "./js-api/js-api";
-import { DownloadCiConfigArgs } from "./js-api/ci-config";
+import { deploy, downloadCiConfig, login } from "./js-api/js-api";
+import { DownloadCiConfigArgs } from "./js-api/handlers/ci-config";
 import packageJson from "../package.json" with { type: "json" };
 
-const baseplateToken = process.env.BASEPLATE_TOKEN;
+const defaultArgs = (yargs: Argv<any>) =>
+  yargs.option("baseplateToken", {
+    describe: "Service account token",
+    type: "string",
+  });
 
 yargs(hideBin(process.argv))
+  .command(
+    "login <baseplateToken>",
+    "login to baseplate console using baseplate token",
+    (yargs) => {
+      return yargs.positional("baseplateToken", {
+        describe: "Service account token generated through console",
+        type: "string",
+      });
+    },
+    (argv) =>
+      login({
+        baseplateToken: argv.baseplateToken,
+      }),
+  )
   .command(
     "deploy <microfrontendName>",
     "deploy a microfrontend",
     (yargs) => {
-      return yargs
+      return defaultArgs(yargs)
         .positional("microfrontendName", {
           describe: "The name of the microfrontend you wish to deploy",
         })
@@ -29,13 +47,8 @@ yargs(hideBin(process.argv))
         });
     },
     (argv) => {
-      if (!baseplateToken) {
-        throw Error(
-          `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`,
-        );
-      }
       deploy({
-        baseplateToken,
+        baseplateToken: argv.baseplateToken,
         microfrontendName: argv.microfrontendName as string,
         environmentName: argv.environment as string,
         dir: argv.dir as string,
@@ -49,7 +62,7 @@ yargs(hideBin(process.argv))
     "download ci config file for a microfrontend",
     (yargs) => {
       return (
-        yargs
+        defaultArgs(yargs)
           .positional("microfrontendName", {
             describe:
               "The name of the microfrontend to download a CI config file for",
@@ -73,13 +86,8 @@ yargs(hideBin(process.argv))
       );
     },
     (argv) => {
-      if (!baseplateToken) {
-        throw Error(
-          `BASEPLATE_TOKEN environment variable is required to use Baseplate CLI.`,
-        );
-      }
       downloadCiConfig({
-        baseplateToken,
+        baseplateToken: argv.baseplateToken,
         microfrontendName:
           argv.microfrontendName as DownloadCiConfigArgs["microfrontendName"],
         ciTool: argv.ciTool as DownloadCiConfigArgs["ciTool"],

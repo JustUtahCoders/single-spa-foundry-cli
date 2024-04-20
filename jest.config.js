@@ -7,6 +7,7 @@ const config = {
   },
   extensionsToTreatAsEsm: [".ts"],
   moduleNameMapper: {
+    "./cli-logger": "<rootDir>/__mocks__/cli-logger.ts",
     "./cli-utils": "<rootDir>/__mocks__/cli-utils.ts",
     "@aws-sdk/client-s3": "<rootDir>/__mocks__/client-s3.ts",
     uuid: "<rootDir>/__mocks__/uuid.ts",
