@@ -12,6 +12,8 @@ export function checkBaseplateToken(args: any): string {
 }
 
 export const exitWithError = jest.fn();
+export const createDirsSync = jest.fn();
+
 export let baseplateFetchMocks = {};
 export let baseplateFetchHistory = {};
 export function resetBaseplateFetch() {
