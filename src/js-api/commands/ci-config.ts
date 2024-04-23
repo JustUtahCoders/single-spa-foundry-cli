@@ -12,7 +12,7 @@ import fs from "node:fs/promises";
 import { log } from "../../cli-logger";
 
 export async function downloadCiConfig(args: DownloadCiConfigArgs) {
-  checkBaseplateToken(args);
+  await checkBaseplateToken(args);
 
   log(
     `Downloading CI Configuration file for microfrontend '${args.microfrontendName}'`,

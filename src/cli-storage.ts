@@ -1,15 +1,20 @@
 import fs from "node:fs";
 import os from "node:os";
+import path from "node:path";
 
-const __confDir = os.homedir() + "/.baseplate";
-if (!fs.existsSync(__confDir)) {
-  fs.mkdirSync(__confDir);
-}
-
+let confInstance;
 export async function storageProvider() {
-  // @ts-ignore
-  const conf = await import("conf");
-  return new conf.default({
+  const __confDir = path.join(os.homedir(), ".baseplate");
+  if (!fs.existsSync(__confDir)) {
+    fs.mkdirSync(__confDir);
+  }
+
+  if (!confInstance) {
+    // @ts-ignore
+    confInstance = await import("conf");
+  }
+
+  return new confInstance.default({
     projectName: "baseplate.cloud",
     configName: ".bpc",
     fileExtension: "",

@@ -24,7 +24,7 @@ import { log } from "../../cli-logger";
 import { v4 as uuidv4 } from "uuid";
 
 export async function deploy(args: DeployArgs) {
-  checkBaseplateToken(args);
+  await checkBaseplateToken(args);
   log(
     `Deploying ${args.microfrontendName} to environment ${args.environmentName}`,
   );

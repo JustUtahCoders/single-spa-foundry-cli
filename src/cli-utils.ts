@@ -4,15 +4,17 @@ import fetch, { RequestInit } from "node-fetch";
 import { error, log, secondary } from "./cli-logger";
 import { storageProvider } from "./cli-storage";
 
-const storage = await storageProvider();
-
 export function exitWithError(err: string) {
   error(err);
   process.exit(1);
 }
 
-export function checkBaseplateToken(args: BaseplateTokenArgs): string {
-  let baseplateToken =
+export async function checkBaseplateToken(
+  args: BaseplateTokenArgs,
+): Promise<string> {
+  const storage = await storageProvider();
+
+  const baseplateToken =
     args.baseplateToken ??
     process.env.BASEPLATE_TOKEN ??
     storage.get("baseplateToken");
@@ -39,7 +41,7 @@ export function createBaseplateFetch(deployArgs: BaseplateTokenArgs) {
       options.headers["content-type"] = "application/json";
     }
 
-    const baseplateToken = checkBaseplateToken(deployArgs);
+    const baseplateToken = await checkBaseplateToken(deployArgs);
     options.headers["Authorization"] = `token ${baseplateToken}`;
 
     const baseUrl = process.env.BASEPLATE_API || "https://baseplate.cloud";

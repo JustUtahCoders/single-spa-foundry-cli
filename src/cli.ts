@@ -2,7 +2,7 @@
 import yargs, { Argv } from "yargs";
 import { hideBin } from "yargs/helpers";
 import { deploy, downloadCiConfig, login } from "./js-api/js-api";
-import { DownloadCiConfigArgs } from "./js-api/handlers/ci-config";
+import { DownloadCiConfigArgs } from "./js-api/commands/ci-config";
 import packageJson from "../package.json" with { type: "json" };
 
 const defaultArgs = (yargs: Argv<any>) =>

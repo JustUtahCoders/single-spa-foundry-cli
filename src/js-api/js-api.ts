@@ -1,3 +1,3 @@
-export { deploy } from "./handlers/deploy";
-export { downloadCiConfig } from "./handlers/ci-config";
-export { login } from "./handlers/login";
+export { deploy } from "./commands/deploy";
+export { downloadCiConfig } from "./commands/ci-config";
+export { login } from "./commands/login";
