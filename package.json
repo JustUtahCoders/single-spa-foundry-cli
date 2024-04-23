@@ -11,7 +11,7 @@
     "lib"
   ],
   "scripts": {
-    "cli": "cross-env NODE_OPTIONS=\"--import ./register-loaders.js --experimental-specifier-resolution=node --experimental-fetch\" node src/cli.ts",
+    "cli": "cross-env BASEPLATE_API=\"http://localhost:7600\" NODE_OPTIONS=\"--import ./register-loaders.js --experimental-specifier-resolution=node --experimental-fetch\" node src/cli.ts",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "lint": "eslint \"src/**/*\"",
@@ -67,6 +67,8 @@
     "@baseplate-sdk/web-app": "^5.5.0",
     "@types/node": "^20.11.3",
     "@types/yargs": "^17.0.32",
+    "chalk": "^5.3.0",
+    "conf": "^12.0.0",
     "uuid": "^9.0.1"
   },
   "lint-staged": {
